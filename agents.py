@@ -1,8 +1,7 @@
 # python libraries
-import copy
 
+import copy
 import mesa
-import random
 import numpy
 import functools
 
@@ -24,8 +23,6 @@ class Fire(mesa.Agent):
         self.steps_counter = 0
         self.cell_prob = 0.0
 
-        # fire properties
-
         # smoke
         self.smoke = Smoke(fire_cell_fuel=self.fuel)
 
@@ -38,6 +35,7 @@ class Fire(mesa.Agent):
     def get_prob(self):
         return self.cell_prob
 
+    # function that calculates probability of cell s being burned in next time step (p_t+1(s))
     def probability_of_fire(self):
         probs = []
         if self.fuel > 0:
@@ -49,11 +47,13 @@ class Fire(mesa.Agent):
                 for agent in agents_in_adjacent:
                     if type(agent) is Fire:
                         adjacent_burning = 1 if agent.is_burning() else 0
+                        # calculates individual probability of burning cell s (self.pos), being influenced by adjacent (s')
                         aux_prob = self.distance_rate(self.pos, adjacent, self.radius) * adjacent_burning
+                        # in this if statement, the wind logic occurs, by biasing the burning cell probability
                         if ACTIVATE_WIND and (adjacent_burning == 1):
                             aux_prob = self.model.wind.apply_wind(aux_prob, self.pos, agent.pos)
                         probs.append(1 - aux_prob)
-            if len(probs) == 0:  # probably due to a low tree density in the wildfire simulation
+            if len(probs) == 0:  # if a low tree density is set, this might happen, so it must be checked
                 P = 0
             else:
                 P = 1 - functools.reduce(lambda a, b: a * b, probs)
@@ -61,12 +61,14 @@ class Fire(mesa.Agent):
             P = 0
         return P
 
+    # function that calculates the euclidean distance between two certain positions
     def euclidean_distance(self, x1, y1, x2, y2):
         a = numpy.array((x1, y1))
         b = numpy.array((x2, y2))
         dist = numpy.linalg.norm(a - b)
         return dist
 
+    # function that calculates the grade of influence of cell s' over cell s, based on a distance_limit
     def distance_rate(self, s, s_, distance_limit):
         m_d = self.euclidean_distance(s[0], s[1], s_[0], s_[1])
         result = 0
@@ -91,30 +93,12 @@ class Fire(mesa.Agent):
             if ACTIVATE_SMOKE:
                 self.smoke.smoke_step(self.burning)
 
+    # Mesa framework native method, which is overwritten, necessary for executing changes made in step() method. This
+    # logic is required to not update the overall grid state until all cells step() method where executed.
     def advance(self):
         # make fire spread slower
         if self.steps_counter % FIRE_SPREAD_SPEED == 0:
             self.burning = self.next_burning_state
-
-    # FIXME: needed methods for HORIZON EVALUATION
-    def get_everything(self):
-        return (self.unique_id, self.model, self.fuel, self.burning, self.next_burning_state, self.moore,
-                self.radius, self.selected_dir, self.steps_counter, self.pos, self.cell_prob, self.smoke)
-
-    def set_everything(self, _unique_id, _model, _fuel, _burning, _next_burning_state, _moore,
-                       _radius, _selected_dir, _steps_counter, _pos, _cell_prob, _smoke):
-        self.unique_id = copy.deepcopy(_unique_id)
-        self.model = _model
-        self.fuel = copy.deepcopy(_fuel)
-        self.burning = copy.deepcopy(_burning)
-        self.next_burning_state = copy.deepcopy(_next_burning_state)
-        self.moore = copy.deepcopy(_moore)
-        self.radius = copy.deepcopy(_radius)
-        self.selected_dir = copy.deepcopy(_selected_dir)
-        self.steps_counter = copy.deepcopy(_steps_counter)
-        self.pos = copy.deepcopy(_pos)
-        self.cell_prob = copy.deepcopy(_cell_prob)
-        self.smoke = copy.deepcopy(_smoke)
 
 
 class Smoke:
@@ -122,7 +106,7 @@ class Smoke:
     def __init__(self, fire_cell_fuel):
         self.smoke = False # activated when fire ignites
         self.dispelling_counter_start_value = fire_cell_fuel
-        self.dispelling_lower_bound_start_value = 2  # TODO only to start with some value, subjective criteria
+        self.dispelling_lower_bound_start_value = SMOKE_PRE_DISPELLING_COUNTER
         self.dispelling_lower_bound = self.dispelling_lower_bound_start_value
         self.dispelling_counter = self.dispelling_counter_start_value
 
@@ -138,6 +122,7 @@ class Smoke:
     def subtract_dispelling_counter(self):
         self.dispelling_counter -= 1
 
+    # function that updates smoke state and counter based on certain conditions
     def smoke_step(self, burning):
         # if not burning and not self.smoke: pass
         if not self.smoke and self.dispelling_counter == self.dispelling_counter_start_value:
@@ -198,6 +183,8 @@ class UAV(mesa.Agent):
         self.moore = True
         self.selected_dir = 0
 
+    # function that checks if a UAV in a certain position (pos), has another UAV nearby. If so, it can't move, otherwise
+    # it will be possible to move.
     def not_UAV_adjacent(self, pos):
         can_move = True
         agents_in_pos = self.model.grid.get_cell_list_contents([pos])
@@ -208,9 +195,11 @@ class UAV(mesa.Agent):
 
     def surrounding_states(self):
         surrounding_states = []
+        # obtains adjacent cells s' from a concrete cell s (self.pos)
         adjacent_cells = self.model.grid.get_neighborhood(
             self.pos, moore=self.moore, include_center=True, radius=UAV_OBSERVATION_RADIUS
         )
+        # obtains each fire cell state, in a list (1 if its burning, 0 if it isn't)
         for cell in adjacent_cells:
             agents = self.model.grid.get_cell_list_contents([cell])
             for agent in agents:
@@ -231,5 +220,8 @@ class UAV(mesa.Agent):
 
         return moved
 
+    # Mesa framework native method, which is overwritten, necessary for executing changes made in step() method
+    # (as it can be seen, in this case UAVs don't need to update anything in step() method, so it isn't overwritten).
+    # This logic is required to not update the overall grid state until all cells step() method where executed.
     def advance(self):
         self.move()

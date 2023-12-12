@@ -6,7 +6,6 @@ Module for visualizing model objects in grid cells.
 """
 from agents import UAV
 from collections import defaultdict
-from common_fixed_variables import PROBABILITY_MAP, BURNING_FLAGS_MAP
 
 from mesa.visualization.ModularVisualization import VisualizationElement
 
@@ -103,8 +102,8 @@ class CanvasGrid(VisualizationElement):
                 for obj in cell_objects:
                     portrayal = self.portrayal_method(obj)
                     if portrayal:
-                        portrayal["x"] = x
                         portrayal["y"] = y
+                        portrayal["x"] = x
                         # To avoid throwing "KeyError: 'Layer'" when prob or flag burning maps are shown,
                         # so UAV won't get its "Layer" attribute in the "portrayal_method(obj)", NUM_AGENTS must
                         # be set to 0.
