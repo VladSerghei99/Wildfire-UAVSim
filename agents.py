@@ -1,8 +1,6 @@
 # python libraries
 
-import copy
 import mesa
-import numpy
 import functools
 
 # own python modules
@@ -48,7 +46,7 @@ class Fire(mesa.Agent):
                     if type(agent) is Fire:
                         adjacent_burning = 1 if agent.is_burning() else 0
                         # calculates individual probability of burning cell s (self.pos), being influenced by adjacent (s')
-                        aux_prob = self.distance_rate(self.pos, adjacent, self.radius) * adjacent_burning
+                        aux_prob = distance_rate(self.pos, adjacent, self.radius) * adjacent_burning
                         # in this if statement, the wind logic occurs, by biasing the burning cell probability
                         if ACTIVATE_WIND and (adjacent_burning == 1):
                             aux_prob = self.model.wind.apply_wind(aux_prob, self.pos, agent.pos)
@@ -60,21 +58,6 @@ class Fire(mesa.Agent):
         else:
             P = 0
         return P
-
-    # function that calculates the euclidean distance between two certain positions
-    def euclidean_distance(self, x1, y1, x2, y2):
-        a = numpy.array((x1, y1))
-        b = numpy.array((x2, y2))
-        dist = numpy.linalg.norm(a - b)
-        return dist
-
-    # function that calculates the grade of influence of cell s' over cell s, based on a distance_limit
-    def distance_rate(self, s, s_, distance_limit):
-        m_d = self.euclidean_distance(s[0], s[1], s_[0], s_[1])
-        result = 0
-        if m_d <= distance_limit:
-            result = m_d ** -2.0
-        return result
 
     def step(self):
         self.steps_counter += 1
@@ -152,7 +135,7 @@ class Wind:
     def apply_wind(self, aux_prob, relative_center_pos, adjacent_pos):
         if not FIXED_WIND:
             self.change_direction()
-            print("Wind: ", self.wind_direction)
+            # print("Wind: ", self.wind_direction)
         if self.is_on_wind_direction(relative_center_pos, adjacent_pos):
             aux_prob = aux_prob + (MU * (1 - aux_prob))  # part of 1 I- 'aux_prob' probability is added, depending on mu
         else:
