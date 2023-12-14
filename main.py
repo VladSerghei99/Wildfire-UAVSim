@@ -46,7 +46,7 @@ def main():
     grid = CanvasGrid(agent_portrayal, WIDTH, HEIGHT, 10 * WIDTH, 10 * HEIGHT)
     # initialize Modular server for mesa Python visualization
     server = mesa.visualization.ModularServer(wildfire_model.WildFireModel, [grid], "WildFire Model")
-    server.port = 8521  # default port
+    server.port = 8521  # default port, others can be set
     server.launch()
 
 

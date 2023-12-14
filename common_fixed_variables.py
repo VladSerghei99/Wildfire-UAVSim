@@ -27,6 +27,8 @@ FUEL_BOTTOM_LIMIT = 7
 DENSITY_PROB = 1  # Tree density (Float number in the interval [0, 1])
 
 WIND_DIRECTION = 'south'
+# if FIXED_WIND == False (compose wind), then variables inside of the if statement are set to
+# be used in the project
 if not FIXED_WIND:
     # Possible mixed wind directions: NW, NE, SW, SE"
     FIRST_DIR = 'south'  # Introduce first wind direction (north, south, east, west):

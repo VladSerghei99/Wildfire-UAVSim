@@ -39,19 +39,27 @@ class Fire(mesa.Agent):
     # function that calculates probability of cell s being burned in next time step (p_t+1(s))
     def probability_of_fire(self):
         probs = []
+        # if at least cell s has some fuel remaining
         if self.fuel > 0:
+            # obtains adjacent cells for a given one (self.pos), based on a radius (self.radius)
             adjacent_cells = self.model.grid.get_neighborhood(
                 self.pos, moore=self.moore, include_center=False, radius=self.radius
             )
+
+            # iterates through each adjacent cell to calculate cell s probability of being burned
+            # based on the adjacent ones
             for adjacent in adjacent_cells:
+                # obtains cell content, such as different agents
                 agents_in_adjacent = self.model.grid.get_cell_list_contents([adjacent])
+                # iterates through each found agent of an adjacent cell
                 for agent in agents_in_adjacent:
                     if type(agent) is Fire:
                         adjacent_burning = 1 if agent.is_burning() else 0
-                        # calculates individual probability of burning cell s (self.pos), being influenced by adjacent (s')
+                        # calculates partial probability of burning cell s (self.pos), being influenced by adjacent (s')
                         aux_prob = distance_rate(self.pos, adjacent, self.radius) * adjacent_burning
                         # in this if statement, the wind logic occurs, by biasing the burning cell probability
                         if ACTIVATE_WIND and (adjacent_burning == 1):
+                            # applies wind to the partial probability
                             aux_prob = self.model.wind.apply_wind(aux_prob, self.pos, agent.pos)
                         probs.append(1 - aux_prob)
             if len(probs) == 0:  # if a low tree density is set, this might happen, so it must be checked

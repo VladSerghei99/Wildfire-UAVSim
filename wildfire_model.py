@@ -10,8 +10,9 @@ import agents
 
 from common_fixed_variables import *
 
+
 # class WildFireModel holds methods for managing the main logic of the grid, such as the main execution loop,
-# setting agents, methods for checking the state of the grid,
+# setting agents, methods for checking the state of the grid, etc
 class WildFireModel(mesa.Model):
 
     def __init__(self):
@@ -140,6 +141,7 @@ class WildFireModel(mesa.Model):
                     counter += 1
         self.MR2_VALUE += counter // 2  # remove duplicate interactions
 
+    # method for checking the state
     def state(self):
         states = []
         for agent in self.schedule.agents:
