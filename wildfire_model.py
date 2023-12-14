@@ -10,12 +10,15 @@ import agents
 
 from common_fixed_variables import *
 
-
+# class WildFireModel holds methods for managing the main logic of the grid, such as the main execution loop,
+# setting agents, methods for checking the state of the grid,
 class WildFireModel(mesa.Model):
 
     def __init__(self):
 
         plt.ion()
+
+        # attributes intialization
 
         self.new_direction_counter = None
         self.datacollector = None
@@ -31,12 +34,18 @@ class WildFireModel(mesa.Model):
 
         self.reset()
 
+    # reset method with attributes initialization. This method should be used whenever it is needed to reset the
+    # environment in execution time. For example, when the graphical interface is up, and reset button is pressed, this
+    # method is called
     def reset(self):
+
         self.unique_agents_id = 0
         # Inverted width and height order, because of matrix accessing purposes, like in many examples:
         #   https://snyk.io/advisor/python/Mesa/functions/mesa.space.MultiGrid
+        # set some Mesa framework management
         self.grid = mesa.space.MultiGrid(HEIGHT, WIDTH, False)
         self.schedule = mesa.time.SimultaneousActivation(self)
+        # set Fire and wind agents (Smoke are created inside Fire agents as well)
         self.set_fire_agents()
         self.wind = agents.Wind()
 
@@ -46,6 +55,7 @@ class WildFireModel(mesa.Model):
         self.new_direction_counter = 0
         self.evaluation_timesteps_counter = 0
 
+        # create and configure UAV agents in the grid
         for a in range(0, self.NUM_AGENTS):
             aux_UAV = agents.UAV(self.unique_agents_id, self)
             y_center += a if a % 2 == 0 else -a
@@ -53,19 +63,24 @@ class WildFireModel(mesa.Model):
             self.schedule.add(aux_UAV)
             self.unique_agents_id += 1
 
+        # set Mesa framework management
         self.datacollector = mesa.DataCollector()
         self.new_direction = [0 for a in range(0, self.NUM_AGENTS)]
 
     # function that create all fire agents in a grid
     def set_fire_agents(self):
+        # obtain center position of the grid
         x_c = int(HEIGHT / 2)
         y_c = int(WIDTH / 2)
-        x = [x_c]  # , x_c + 1, x_c - 1
-        y = [y_c]  # , y_c + 1, y_c - 1
+        x = [x_c]
+        y = [y_c]
         for i in range(HEIGHT):
             for j in range(WIDTH):
-                # decides to put a "tree" (fire agent) or not
-                if SYSTEM_RANDOM.random() < DENSITY_PROB or (i in x and j in y):  # if prob or in center
+                # decides to put a "tree" (fire agent) or not, if less than DENSITY_PROB
+                # or if it is in the center of the grid
+                if SYSTEM_RANDOM.random() < DENSITY_PROB or (i in x and j in y):
+                    # only if it is in the center of the grid, Fire agent is set burning at the beginning, otherwise
+                    # it is set to not burning
                     if i in x and j in y:
                         self.new_fire_agent(i, j, True)
                     else:
@@ -73,18 +88,26 @@ class WildFireModel(mesa.Model):
 
     # function that create new fire agent in a concrete cell
     def new_fire_agent(self, pos_x, pos_y, burning):
+        # creates new Fire agent
         source_fire = agents.Fire(self.unique_agents_id, self, burning)
+        # set Fire agent unique id, incremented from the one used before it
         self.unique_agents_id += 1
+        # add to scheduler
         self.schedule.add(source_fire)
+        # place agent in the grid
         self.grid.place_agent(source_fire, tuple([pos_x, pos_y]))
 
+    # manage directions obtained from the new_direction attribute, and make the UAV team move over the forest area
     def set_drone_dirs(self):
+        # used for selecting the corresponding direction from new_direction attribute, for each UAV
         self.new_direction_counter = 0
+        # searches for all UAV agents in scheduler, and set their new directions
         for agent in self.schedule.agents:
             if type(agent) is agents.UAV:
                 agent.selected_dir = self.new_direction[self.new_direction_counter]
                 self.new_direction_counter += 1
 
+    # this method obtains effective wildfire monitoring (MR1) for time step t
     def MR1(self, state):
         # total amount of burning cells from state variable
         MR1_reward = [sum(aux_state) for aux_state in state]
@@ -93,20 +116,26 @@ class WildFireModel(mesa.Model):
         # MR1_list with added rewards
         self.MR1_LIST = [a + b for a, b in zip(self.MR1_LIST, reward)]
 
+    # this method obtains collision risk avoidance metric (MR2) for time step t
     def MR2(self):
         counter = 0
+        # get UAV agents from scheduler
         UAV_agents = [agent for agent in self.schedule.agents if type(agent) is agents.UAV]
 
+        # checks number of interactions for each UAV with others
         for idx, agent in enumerate(UAV_agents):
             aux_agents_positions = UAV_agents.copy()
             del aux_agents_positions[idx]
 
+            # checks number of interactions for one UAV
             for a in aux_agents_positions:
                 x1 = agent.pos[0]
                 y1 = agent.pos[1]
                 x2 = a.pos[0]
                 y2 = a.pos[1]
+                # Euclidean distance between two UAV grid positions
                 distance = euclidean_distance(x1, y1, x2, y2)
+                # if distance between the two UAVs is less than the defined security distance, add 1 to the counter
                 if distance < SECURITY_DISTANCE:
                     counter += 1
         self.MR2_VALUE += counter // 2  # remove duplicate interactions

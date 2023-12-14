@@ -7,7 +7,7 @@ import functools
 
 from common_fixed_variables import *
 
-
+# Class Fire holds methods for managing Fire agents,
 class Fire(mesa.Agent):
 
     def __init__(self, unique_id, model, burning=False):
@@ -24,12 +24,15 @@ class Fire(mesa.Agent):
         # smoke
         self.smoke = Smoke(fire_cell_fuel=self.fuel)
 
+    # checks if a certain Fire agent is burning | True if burning, False if not
     def is_burning(self):
         return self.burning
 
+    # get a certain Fire agent remaining fuel | Integer value
     def get_fuel(self):
         return round(self.fuel)
 
+    # get a certain Fire agent
     def get_prob(self):
         return self.cell_prob
 
