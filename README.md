@@ -3,7 +3,7 @@
 ## Project descritpion
 
 Wildfire-UAVSim is a customizable wildfire tracking simulator that enables
-the evaluation of diverse adaptation strategies. Among its many configuration parameters, we can customize the forest area with different densities of vegetation, as well as fire and smoke dispersion patterns that are affected by factors such as wind, conforming different observability conditions. The configuration options of our simulator also allow to place a team of UAVs in charge of tracking the fire over the forest area.
+the evaluation of diverse adaptation strategies. Among its many configuration parameters, we can customize the forest area with different densities of vegetation, as well as fire and smoke dispersion patterns that are affected by factors such as wind, conforming different observability conditions. The configuration options of our simulator also allow to place a team of UAVs in charge of tracking the fire over the forest area. Wildfire-UAVSim provides a graphical web interface native from Mesa framework, executed by the simulator, in order to keep track of how the simulation evolves in time.
 
 The problem formalization of Wildfire-UAVSim, as well as other concepts and explanations, can be found in the paper submitted to SEAMS conference in (LINK).
 
@@ -67,6 +67,36 @@ Once project is opened, and dependencies were installed, `main.py` can be execut
 A web page interface should appear, with the wildfire grid, and buttons for configuring the simulation.
 
 # Graphical interface functionalities
+
+When executing the project as explained above, a web page hosted in http://127.0.0.1:8521/ should appear in user's default browser. Port can be modified in `main.py` file if user has that the default one already busy. The graphical interface should look like:
+
+![webpagegraphicalinterfaceelements](https://github.com/envilk/Wildfire-UAVSim/assets/25938116/a230ebb9-0db6-491e-abd8-b0edec127a95)
+
+The relevant graphical interface elements are:
+
+### `Grid`
+
+The grid with generated cells, with vegetation, fire, smoke, and UAVs, can be seen in the center of the screen.
+
+### `Start button`
+
+The start button allows to run the simulation without stopping.
+
+### `Step button`
+
+The step button allows to execute one time step at a time.
+
+### `Reset button`
+
+The reset button allows to execute the `reset()` method, inherited and overwritten from Mesa framework class `mesa.Model`, into WildFireModel class, inside `widlfire_model.py` file.
+
+### `Frames per second`
+
+Is a slider that allows to set the frames per second (FPS) velocity for the graphical visualization of the simulation execution. Each frame corresponds to one time step. Its range goes from 1 to 20 FPS, taking into account that, counterintuitively, 0 FPS set the fastest FPS velocity. If sometimes the simulation seems that is not working fluetnly, it may be caused by the `FIRE_SPREAD_SPEED` variable referenced below.
+
+### `Current step counter`
+
+Indicates the current time step of the simulation.
 
 # Common variables configuration
 
