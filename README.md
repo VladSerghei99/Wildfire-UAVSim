@@ -5,8 +5,6 @@
 Wildfire-UAVSim is a customizable wildfire tracking simulator that enables
 the evaluation of diverse adaptation strategies. Among its many configuration parameters, we can customize the forest area with different densities of vegetation, as well as fire and smoke dispersion patterns that are affected by factors such as wind, conforming different observability conditions. The configuration options of our simulator also allow to place a team of UAVs in charge of tracking the fire over the forest area. Wildfire-UAVSim provides a graphical web interface native from Mesa framework, executed by the simulator, in order to keep track of how the simulation evolves in time.
 
-The problem formalization of Wildfire-UAVSim, as well as other concepts and explanations, can be found in the paper submitted to SEAMS conference in (LINK).
-
 ## Files structure
 
 5 Python files compose the project structure, namely:
@@ -100,6 +98,53 @@ Indicates the current time step of the simulation.
 
 # Common variables configuration
 
-## Main variables description
+Global variables are used in the project to configure different simulation executions. In the next subsections several global variables descriptions are shown, as well as many configuration examples for execution.
+
+## Variables description
+
+### Forest area
+
+`BATCH_SIZE`: Establishes how long the simulation will run, in number of time steps.
+
+`WIDTH`, `HEIGHT`: Set the grid size (forest area size) in cells.
+
+`BURNING_RATE`: Sets the fuel decay speed in terms of time steps.
+
+`FIRE_SPREAD_SPEED`: Sets how fast fire spreads to other cells, in terms of time steps.
+
+`FUEL_UPPER_LIMIT`, `FUEL_BOTTOM_LIMIT`: Establish the maximum and
+minimum amount of burnable fuel present in each cell, respectively.
+
+`DENSITY_PROB`: Is a value in the range `[0, 1]` that establishes the
+percentage of the grid covered by vegetation.
+
+### Wind
+
+`ACTIVATE_WIND`: Sets whether the fire spread is influenced by wind.
+
+`FIXED_WIND`: If is active, then wind blows in the direction set by `WIND_DIRECTION`. If it is not, it means wind blows two directions, specified by `FIRST_DIR` and `SECOND_DIR`. Since wind can blow a direction stronger than the
+other one, `FIRST_DIR_PROB` establishes the wind first direction’s predominance.
+
+`PROBABILITY_MAP`: If is active, the probability of the fire to spread to each cell at all times can be visualized.
+
+`MU`: Sets how strong wind blows with a value in the range `[0, 1]`.
+
+### Smoke
+
+`ACTIVATE_SMOKE`: Sets whether smoke will be part of the simulation.
+
+`SMOKE_PRE_DISPELLING_COUNTER`: Establishes how fast smoke appears after fire starts in a cell.
+
+### UAV
+
+`NUM_AGENTS`: Establishes the amount of UAVs that will fly over the forest area (zero indicates the simulator will simulate only the wildfire spread).
+
+`N_ACTIONS`: Specifies the number of possible actions each UAV can take when deciding on a move, which we set as `[north, east, west, south]`.
+
+`UAV_OBSERVATION_RADIUS`: Sets the observation radius—technically it is not really a radius, since observed areas have square shapes.
+
+`SECURITY_DISTANCE`: Establishes the minimum distance that UAVs should be separated from each other for avoiding collisions.
 
 ## Configuration examples
+
+Three default examples of how different variables can be configured to develop distinct scenarios, can be seen below.
