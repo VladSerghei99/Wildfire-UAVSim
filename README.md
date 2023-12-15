@@ -33,12 +33,9 @@ In the following subsections, the installation process for executing the project
 
 ## Installing Pycharm Community Edition IDE
 
-First, downloading and installing Pycharm Community Edition IDE is explained to easily run and set up the project and its dependencies.
-Since this project is tested on Ubuntu 22.04.2 LTS, the user can use `snap` command in cmd (pre-installed from Ubuntu 16.04 LTS and later) as a fast installation option. The user must execute the command
-`sudo snap install pycharm-community --classic` in cmd for installing Pycharm Community Edition.
+The first step is to download and install Pycharm Community Edition IDE to easily run and setup the project and its dependencies. For Linux users (this project was initially tested on Ubuntu 22.04.2 LTS), they can use the `snap` command in cmd (pre-installed from Ubuntu 16.04 LTS and later) as a fast installation option. Users must execute the command `sudo snap install pycharm-community --classic` in cmd for installing Pycharm Community Edition.
 
-As mentioned, this project was tested on Ubuntu 22.04.2 LTS, so for other OS were not. For checking system requirements, and information about the installation process for other OS,
-visit https://www.jetbrains.com/help/pycharm/installation-guide.html.
+Despite this project was initially tested on Ubuntu 22.04.2 LTS, it has been later tested on Windows and Mac too. For checking system requirements, and information about the installation process, please visit https://www.jetbrains.com/help/pycharm/installation-guide.html.
 
 ## Opening the project
 
@@ -66,8 +63,6 @@ A web page interface should appear, with the wildfire grid, and buttons for conf
 # Graphical interface functionalities
 
 When executing the project as explained above, a web page hosted in http://127.0.0.1:8521/ should appear in user's default browser. Port can be modified in `main.py` file if user has that the default one already busy. The graphical interface should look like:
-
-![webpagegraphicalinterfaceelements](https://github.com/envilk/Wildfire-UAVSim/assets/25938116/a230ebb9-0db6-491e-abd8-b0edec127a95)
 
 The relevant graphical interface elements are:
 
@@ -175,10 +170,6 @@ A scenario with no wind, smoke, or UAV, should appear.
 
 `PROBABILITY_MAP = False`
 
-The scenario should look like the following:
-
- <img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/ec440e8e-8c0d-41bd-86da-946d1c06977d" alt="normal" width="450" height="450">
-
 ### Windy conditions (no smoke, wind, no UAV)
 
 Concretely, a scenario with two weak wind components should appear, first with 50% of south component, and a second west component with 50%. In this scenario, neither smoke or UAV should appear.
@@ -203,10 +194,6 @@ Concretely, a scenario with two weak wind components should appear, first with 5
 
 `MU = 0.5`
 
-The scenario should look like the following:
-
-<img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/432cad82-baad-4283-be65-27222134a83d" alt="weakwind" width="450" height="450">
-
 ### Windy and partial observatiliy conditions (smoke, wind, no UAV)
 
 A scenario with strong windy conditions, blowing east, and late short-lasting smoke should appear. Remember that, since the dispelling counter for smoke is set in `Smoke` class by default, inside `agents.py` file, changes should be done to the `self.dispelling_counter_start_value` variable, inside `__init()__` method (`Smoke` class). Keep also in mind that `self.dispelling_counter_start_value + SMOKE_PRE_DISPELLING_COUNTER` should be greater than the amount of fuel assigned to each cell (`FUEL_UPPER_LIMIT`), in order to avoid situations in which smoke dissipates before the end of the cell’s burning process.
@@ -229,10 +216,6 @@ A scenario with strong windy conditions, blowing east, and late short-lasting sm
 
 `self.dispelling_counter_start_value = 4`
 
-The scenario should look like the following:
-
-<img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/bd80d0c5-9a76-4696-98d2-009b9c3bd7e3" alt="eastshortsmoke" width="450" height="450">
-
 ### 2 UAV with small partial areas (normal conditions)
 
 A scenario with 2 UAV having small partial areas in normal conditions should appear.
@@ -246,10 +229,6 @@ A scenario with 2 UAV having small partial areas in normal conditions should app
 `PROBABILITY_MAP = False`
 
 `UAV_OBSERVATION_RADIUS = 3`
-
-The scenario should look like the following:
-
-<img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/ca59cf8e-0389-430c-a4e9-bdba2377fcd0" alt="2UAV" width="450" height="450">
 
 ### 3 UAV with big partial areas (smoke, no wind)
 
@@ -269,10 +248,6 @@ A scenario with 3 UAV having small partial areas, with fast long-lasting smoke, 
 
 `UAV_OBSERVATION_RADIUS = 12`
 
-The scenario should look like the following:
-
-<img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/48265d89-401c-41e3-807f-48e2d4114da5" alt="3UAV" width="450" height="450">
-
 ### Probabaility map
 
 A scenario with normal conditions should appear. Keep in mind that changing wind conditions will affect to the visualized probabilitites. Also, remember to set 0 UAV when showing the fire probability map. Remember to set 0 UAV when showing the fire probability map.
@@ -284,8 +259,3 @@ A scenario with normal conditions should appear. Keep in mind that changing wind
 `ACTIVATE_SMOKE = False`
 
 `PROBABILITY_MAP = True`
-
-The scenario should look like the following:
-
-<img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/6d2aa43e-f037-456e-a90b-561d2e5d4116" alt="probmap" width="450" height="450">
-
