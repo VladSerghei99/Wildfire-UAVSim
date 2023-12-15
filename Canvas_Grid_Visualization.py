@@ -5,6 +5,7 @@ Modular Canvas Rendering
 Module for visualizing model objects in grid cells.
 """
 from agents import UAV
+from common_fixed_variables import UAV_OBSERVATION_RADIUS
 from collections import defaultdict
 
 from mesa.visualization.ModularVisualization import VisualizationElement
@@ -94,7 +95,6 @@ class CanvasGrid(VisualizationElement):
         self.js_code = "elements.push(" + new_element + ");"
 
     def render(self, model):
-        UAV_obs_radius = 8
         grid_state = defaultdict(list)
         for x in range(model.grid.width):
             for y in range(model.grid.height):
@@ -109,7 +109,7 @@ class CanvasGrid(VisualizationElement):
                         # be set to 0.
                         grid_state[portrayal["Layer"]].append(portrayal)
                         if type(obj) is UAV:
-                            limit = UAV_obs_radius + 1
+                            limit = UAV_OBSERVATION_RADIUS + 1
                             for i in range (- limit, limit + 1):
                                 for j in range (- limit, limit + 1):
                                     if i == -limit or i == limit or j == -limit or j == limit:

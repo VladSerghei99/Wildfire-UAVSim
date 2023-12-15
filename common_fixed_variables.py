@@ -8,11 +8,11 @@ SYSTEM_RANDOM = random.SystemRandom()  # ... Not available on all systems ... (P
 # simulator activators (environment conditions)
 
 FIXED_WIND = False
-ACTIVATE_SMOKE = True
-ACTIVATE_WIND = True
+ACTIVATE_SMOKE = False
+ACTIVATE_WIND = False
 # To avoid throwing "KeyError: 'Layer'" when prob burning maps are shown (so UAV won't get its "Layer" attribute in the
 # "portrayal_method(obj)"), NUM_AGENTS must be set to 0.
-PROBABILITY_MAP = False
+PROBABILITY_MAP = True
 
 # model params specifications
 
@@ -27,8 +27,7 @@ FUEL_BOTTOM_LIMIT = 7
 DENSITY_PROB = 1  # Tree density (Float number in the interval [0, 1])
 
 WIND_DIRECTION = 'south'
-# if FIXED_WIND == False (compose wind), then variables inside of the if statement are set to
-# be used in the project
+# if FIXED_WIND == False (compose wind), then variables inside the if statement are set to be used in the project
 if not FIXED_WIND:
     # Possible mixed wind directions: NW, NE, SW, SE"
     FIRST_DIR = 'south'  # Introduce first wind direction (north, south, east, west):
@@ -40,7 +39,7 @@ SMOKE_PRE_DISPELLING_COUNTER = 2
 
 # UAVs params
 
-NUM_AGENTS = 2
+NUM_AGENTS = 0
 N_ACTIONS = 4
 UAV_OBSERVATION_RADIUS = 8
 side = ((UAV_OBSERVATION_RADIUS * 2) + 1)

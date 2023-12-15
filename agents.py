@@ -7,9 +7,11 @@ import functools
 
 from common_fixed_variables import *
 
-# Class Fire holds methods for managing Fire agents,
+
+# Class Fire holds methods for managing Fire agents
 class Fire(mesa.Agent):
 
+    # constructor
     def __init__(self, unique_id, model, burning=False):
         super().__init__(unique_id, model)
         self.fuel = random.randint(FUEL_BOTTOM_LIMIT, FUEL_UPPER_LIMIT)
@@ -70,6 +72,7 @@ class Fire(mesa.Agent):
             P = 0
         return P
 
+    # Mesa framework native method, which is overwritten, necessary for setting next state of the simulation
     def step(self):
         self.steps_counter += 1
         # make fire spread slower
@@ -78,12 +81,15 @@ class Fire(mesa.Agent):
             #     self.model.wind.wind_direction = 'south'
             self.cell_prob = self.probability_of_fire()
             generated = random.random()
+            # set next burning state
             if generated < self.cell_prob:
                 self.next_burning_state = True
             else:
                 self.next_burning_state = False
+            # if possible, subtract BURNING_RATE from fuel of the corresponding cell
             if self.burning and self.fuel > 0:
                 self.fuel = self.fuel - BURNING_RATE
+            # smoke step
             if ACTIVATE_SMOKE:
                 self.smoke.smoke_step(self.burning)
 
@@ -95,64 +101,87 @@ class Fire(mesa.Agent):
             self.burning = self.next_burning_state
 
 
+# Class Smoke holds methods for managing smoke functionality
 class Smoke:
 
+    # constructor
     def __init__(self, fire_cell_fuel):
-        self.smoke = False # activated when fire ignites
+        self.smoke = False  # activated when fire ignites
         self.dispelling_counter_start_value = fire_cell_fuel
         self.dispelling_lower_bound_start_value = SMOKE_PRE_DISPELLING_COUNTER
         self.dispelling_lower_bound = self.dispelling_lower_bound_start_value
         self.dispelling_counter = self.dispelling_counter_start_value
 
+    # it gets the remaining dispelling counter value
     def get_dispelling_counter_value(self):
         return self.dispelling_counter
 
+    # it gets the remaining pre-dispelling counter value
     def get_dispelling_counter_start_value(self):
         return self.dispelling_counter_start_value
 
+    # it gets if smoke is active | True if active, False if not
     def is_smoke_active(self):
         return self.smoke
 
+    # it subtracts one from dispelling counter value
     def subtract_dispelling_counter(self):
         self.dispelling_counter -= 1
 
-    # function that updates smoke state and counter based on certain conditions
+    # function that updates smoke state and its counters based on certain conditions
     def smoke_step(self, burning):
-        # if not burning and not self.smoke: pass
+        # if smoke isn't activated yet:
         if not self.smoke and self.dispelling_counter == self.dispelling_counter_start_value:
+            # if pre-dispelling smoke counter can start (cell is burning), or if it already started:
             if ((burning and self.dispelling_lower_bound == self.dispelling_lower_bound_start_value) or
                     (0 < self.dispelling_lower_bound < self.dispelling_lower_bound_start_value)):
+                # subtract from pre-dispelling counter (on the way to start smoke)
                 self.dispelling_lower_bound -= 1
+            # if pre-dispelling smoke counter already finished:
             elif self.dispelling_lower_bound == 0:
+                # start smoke counter (activate smoke)
                 self.smoke = True
+        # if smoke can start, or if it already started
         elif self.smoke:
+            # if dispelling counter can start, or if it already started
             if 0 < self.dispelling_counter <= self.dispelling_counter_start_value:
+                # subtract from dispelling counter
                 self.subtract_dispelling_counter()
+            # if dispelling counter already finished
             elif self.dispelling_counter == 0:
+                # smoke counter is stopped
                 self.smoke = False
 
 
+# Class Wind holds methods for managing wind functionality
 class Wind:
 
+    # constructor
     def __init__(self):
         self.wind_direction = WIND_DIRECTION
 
+    # it allows to change wind direction based on FIRST_DIR_PROB value
     def change_direction(self):
         if SYSTEM_RANDOM.random() < FIRST_DIR_PROB:
             self.wind_direction = FIRST_DIR
         else:
             self.wind_direction = SECOND_DIR
 
+    # function to apply wind to partial burning probability of cell s (relative_center_pos),
+    # caused by cell s' (adjacent_pos)
     def apply_wind(self, aux_prob, relative_center_pos, adjacent_pos):
+        # if wind is compound by more than one direction
         if not FIXED_WIND:
             self.change_direction()
             # print("Wind: ", self.wind_direction)
         if self.is_on_wind_direction(relative_center_pos, adjacent_pos):
             aux_prob = aux_prob + (MU * (1 - aux_prob))  # part of 1 I- 'aux_prob' probability is added, depending on mu
         else:
-            aux_prob = aux_prob - (MU * aux_prob)   # part of 'aux_prob' probability is removed, depending on mu
+            aux_prob = aux_prob - (MU * aux_prob)  # part of 'aux_prob' probability is removed, depending on mu
         return aux_prob
 
+    # function that checks if cell located in relative_center_pos is on wind direction, influenced by cell located
+    # in adjacent_pos
     def is_on_wind_direction(self, relative_center_pos, adjacent_pos):
         on_wind_direction = False
         if self.wind_direction == 'east':
@@ -170,8 +199,10 @@ class Wind:
         return on_wind_direction
 
 
+# Class UAV holds methods for managing UAV agents
 class UAV(mesa.Agent):
 
+    # constructor
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
         self.moore = True
@@ -187,6 +218,7 @@ class UAV(mesa.Agent):
                 can_move = False
         return can_move
 
+    # function for obtaining observed cells for the corresponding UAV
     def surrounding_states(self):
         surrounding_states = []
         # obtains adjacent cells s' from a concrete cell s (self.pos)
@@ -201,13 +233,18 @@ class UAV(mesa.Agent):
                     surrounding_states.append(int(agent.is_burning() is True))
         return surrounding_states
 
+    # function for moving UAV over the grid area
     def move(self):
-        # directions = [0, 1, 2, 3]  # right, down, left, up
+        # vectors for moving to different positions, based on 4 directions = [0, 1, 2, 3] = [right, down, left, up].
+        # For example, if direction 1 is chosen, then the UAV moves 0 cells in x-axis, and -1 cell in y-axis
         move_x = [1, 0, -1, 0]
         move_y = [0, -1, 0, 1]
         moved = False
 
+        # it calculates the position the corresponding UAV will move to
         pos_to_move = (self.pos[0] + move_x[self.selected_dir], self.pos[1] + move_y[self.selected_dir])
+        # checks if the position to move is inside the grid bounds, and that the UAV doesn't have other UAV nearby. If
+        # so, the UAV moves
         if not self.model.grid.out_of_bounds(pos_to_move) and self.not_UAV_adjacent(pos_to_move):
             self.model.grid.move_agent(self, tuple(pos_to_move))
             moved = True

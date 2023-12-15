@@ -15,6 +15,7 @@ from common_fixed_variables import *
 # setting agents, methods for checking the state of the grid, etc
 class WildFireModel(mesa.Model):
 
+    # constructor
     def __init__(self):
 
         plt.ion()
@@ -87,7 +88,7 @@ class WildFireModel(mesa.Model):
                     else:
                         self.new_fire_agent(i, j, False)
 
-    # function that create new fire agent in a concrete cell
+    # function that creates new fire agent in a concrete cell
     def new_fire_agent(self, pos_x, pos_y, burning):
         # creates new Fire agent
         source_fire = agents.Fire(self.unique_agents_id, self, burning)
@@ -141,23 +142,30 @@ class WildFireModel(mesa.Model):
                     counter += 1
         self.MR2_VALUE += counter // 2  # remove duplicate interactions
 
-    # method for checking the state
+    # method for obtaining each UAV partial observation
     def state(self):
         states = []
+        # this for loop obtains the amount of burning cells for each agent
         for agent in self.schedule.agents:
             if type(agent) is agents.UAV:
                 surrounding_states = agent.surrounding_states()
                 states.append(surrounding_states)
 
+        # this for loop adds a zero in those positions of the list that would correspond to cells that cannot be
+        # observed. This is done when a UAV reaches an edge/corner, not getting the list in the corresponding format
+        # Mesa framework asks for
         for st, _ in enumerate(states):
             counter = len(states[st])
             for i in range(counter, N_OBSERVATIONS):
                 states[st].append(0)
         return states
 
+    # Mesa framework native method, which is overwritten, necessary for setting next state of the simulation
     def step(self):
         self.datacollector.collect(self)
 
+        # check if simulation ended, if so print MR1 and MR2 overall metrics,
+        # and finish loop. Otherwise, keep executing.
         if BATCH_SIZE == self.evaluation_timesteps_counter - 1:
             print(" --- MR1 --- ")
             print(self.MR1_LIST)
@@ -181,7 +189,9 @@ class WildFireModel(mesa.Model):
             self.MR1(state)
             self.MR2()
 
+            # It sets new directions for the UAV team
             self.set_drone_dirs()
 
         self.evaluation_timesteps_counter += 1
+        # execute each agent step() method
         self.schedule.step()
