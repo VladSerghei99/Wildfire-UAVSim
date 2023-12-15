@@ -3,7 +3,7 @@
 ## Project descritpion
 
 Wildfire-UAVSim is a customizable wildfire tracking simulator that enables
-the evaluation of diverse adaptation strategies. Among its many configuration parameters, we can customize the forest area with different densities of vegetation, as well as fire and smoke dispersion patterns that are affected by factors such as wind, conforming different observability conditions. The configuration options of our simulator also allow to place a team of UAVs in charge of tracking the fire over the forest area. Wildfire-UAVSim provides a graphical web interface native from Mesa framework, executed by the simulator, in order to keep track of how the simulation evolves in time.
+the evaluation of diverse adaptation strategies. Among its many configuration parameters, the forest area is customizable with different densities of vegetation, as well as fire and smoke dispersion patterns that are affected by factors such as wind, conforming different observability conditions. The configuration options of our simulator also allow to place a team of UAVs in charge of tracking the fire over the forest area. Wildfire-UAVSim provides a graphical web interface native from Mesa framework, executed by the simulator, in order to keep track of how the simulation evolves in time.
 
 ## Files structure
 
@@ -50,8 +50,7 @@ Select project editor. For openning the project next tiems, repeat same process.
 
 Once the project is opened, some dependencies are necessary. To install them, first go to `Settings > Project > Python Interpreter`, then select the desired Python interpreter
 for executing the project. As default `/usr/bin/python3.10` should appear in the `Python Interpreter:` tab, which already contain some default dependencies if Ubuntu 22.04.2 LTS is installed. For other Python interpreters,
-other dependencies may be needed to be installed. On the same Pycharm configuration window, click on `+` icon, and search for the following dependencies (selecting the version should be done for testing project same way as
-it was done for the research paper. It can be done with the `Specify version` checkbox):
+other dependencies may be needed to be installed. On the same Pycharm configuration window, click on `+` icon, and search for the following dependencies (The user should specify the same version as the one used when developing the project. The version can be specified by clicking on the "Specify version" checkbox):
 
 <ul>
   <li>Mesa (v.1.2.1)</li>
@@ -90,7 +89,7 @@ The reset button allows to execute the `reset()` method, inherited and overwritt
 
 ### `Frames per second`
 
-Is a slider that allows to set the frames per second (FPS) velocity for the graphical visualization of the simulation execution. Each frame corresponds to one time step. Its range goes from 1 to 20 FPS, taking into account that, counterintuitively, 0 FPS set the fastest FPS velocity. If sometimes the simulation seems that is not working fluetnly, it may be caused by the `FIRE_SPREAD_SPEED` variable referenced below.
+It is a slider that allows to set the frames per second (FPS) velocity for the graphical visualization of the simulation execution. Each frame corresponds to one time step. Its range goes from 1 to 20 FPS, taking into account that, counterintuitively, 0 FPS set the fastest FPS velocity. One reason why the simulation might seem not be playing fluently could be the setting of the `FIRE_SPREAD_SPEED` variable referenced below.
 
 ### `Current step counter`
 
@@ -104,47 +103,189 @@ Global variables are used in the project to configure different simulation execu
 
 ### Forest area
 
-`BATCH_SIZE`: Establishes how long the simulation will run, in number of time steps.
+`BATCH_SIZE`: It establishes how long the simulation will run, in number of time steps.
 
-`WIDTH`, `HEIGHT`: Set the grid size (forest area size) in cells.
+`WIDTH`, `HEIGHT`: It sets the grid size (forest area size) in cells.
 
-`BURNING_RATE`: Sets the fuel decay speed in terms of time steps.
+`BURNING_RATE`: It sets the fuel decay speed in terms of time steps.
 
-`FIRE_SPREAD_SPEED`: Sets how fast fire spreads to other cells, in terms of time steps.
+`FIRE_SPREAD_SPEED`: it sets how fast fire spreads to other cells, in terms of time steps.
 
-`FUEL_UPPER_LIMIT`, `FUEL_BOTTOM_LIMIT`: Establish the maximum and
+`FUEL_UPPER_LIMIT`, `FUEL_BOTTOM_LIMIT`: They establish the maximum and
 minimum amount of burnable fuel present in each cell, respectively.
 
-`DENSITY_PROB`: Is a value in the range `[0, 1]` that establishes the
+`DENSITY_PROB`: It is a value in the range `[0, 1]` that establishes the
 percentage of the grid covered by vegetation.
 
 ### Wind
 
-`ACTIVATE_WIND`: Sets whether the fire spread is influenced by wind.
+`ACTIVATE_WIND`: It sets whether the fire spread is influenced by wind.
 
-`FIXED_WIND`: If is active, then wind blows in the direction set by `WIND_DIRECTION`. If it is not, it means wind blows two directions, specified by `FIRST_DIR` and `SECOND_DIR`. Since wind can blow a direction stronger than the
-other one, `FIRST_DIR_PROB` establishes the wind first direction’s predominance.
+`FIXED_WIND`: If it is active, then wind blows in the direction set by `WIND_DIRECTION`. If it is not, it means wind blows two directions, specified by `FIRST_DIR` and `SECOND_DIR`. Since wind can blow a direction stronger than the other one, `FIRST_DIR_PROB` establishes the wind first direction’s predominance.
 
-`PROBABILITY_MAP`: If is active, the probability of the fire to spread to each cell at all times can be visualized.
+`PROBABILITY_MAP`: If it is active, the probability of the fire to spread to each cell at all times can be visualized.
 
-`MU`: Sets how strong wind blows with a value in the range `[0, 1]`.
+`MU`: It sets how strong wind blows with a value in the range `[0, 1]`.
 
 ### Smoke
 
-`ACTIVATE_SMOKE`: Sets whether smoke will be part of the simulation.
+`ACTIVATE_SMOKE`: It sets whether smoke will be part of the simulation.
 
-`SMOKE_PRE_DISPELLING_COUNTER`: Establishes how fast smoke appears after fire starts in a cell.
+`SMOKE_PRE_DISPELLING_COUNTER`: It establishes how fast smoke appears after fire starts in a cell.
 
 ### UAV
 
-`NUM_AGENTS`: Establishes the amount of UAVs that will fly over the forest area (zero indicates the simulator will simulate only the wildfire spread).
+`NUM_AGENTS`: It establishes the amount of UAVs that will fly over the forest area (zero indicates the simulator will simulate only the wildfire spread).
 
-`N_ACTIONS`: Specifies the number of possible actions each UAV can take when deciding on a move, which we set as `[north, east, west, south]`.
+`N_ACTIONS`: Specifies the number of possible actions each UAV can take when deciding on a move, which by default is set as `[north, east, west, south]`.
 
-`UAV_OBSERVATION_RADIUS`: Sets the observation radius—technically it is not really a radius, since observed areas have square shapes.
+`UAV_OBSERVATION_RADIUS`: It sets the observation radius—technically it is not really a radius, since observed areas have square shapes.
 
-`SECURITY_DISTANCE`: Establishes the minimum distance that UAVs should be separated from each other for avoiding collisions.
+`SECURITY_DISTANCE`: It establishes the minimum distance that UAVs should be separated from each other for avoiding collisions.
 
 ## Configuration examples
 
-Three default examples of how different variables can be configured to develop distinct scenarios, can be seen below.
+Six default examples of how different variables can be configured to develop distinct scenarios, can be seen below. All scenarios shown are captured in `time step = 20`, in different time steps scenarios might look different.
+
+### Common default variables
+
+Before showing the examples, this section compiles all variables that can be set in common with all examples. The variables that were not mentioned can be set to their default value.
+
+`BATCH_SIZE = 90`
+
+`WIDTH = 50`, `HEIGHT = 50`
+
+`BURNING_RATE = 1`
+
+`FIRE_SPREAD_SPEED = 2`
+
+`FUEL_UPPER_LIMIT = 10`, `FUEL_BOTTOM_LIMIT = 7`
+
+`DENSITY_PROB = 1`
+
+### Normal conditions (no smoke, no wind, no UAV)
+
+A scenario with no wind, smoke, or UAV, should appear.
+
+`NUM_AGENTS = 0`
+
+`ACTIVATE_WIND = False`
+
+`ACTIVATE_SMOKE = False`
+
+`PROBABILITY_MAP = False`
+
+The scenario should look like the following:
+
+ <img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/ec440e8e-8c0d-41bd-86da-946d1c06977d" alt="normal" width="450" height="450">
+
+### Windy conditions (no smoke, wind, no UAV)
+
+Concretely, a scenario with two weak wind components should appear, first with 50% of south component, and a second west component with 50%. In this scenario, neither smoke or UAV should appear.
+
+`NUM_AGENTS = 0`
+
+`ACTIVATE_WIND = True`
+
+`ACTIVATE_SMOKE = False`
+
+`PROBABILITY_MAP = False`
+
+`FIXED_WIND = False`
+
+`WIND_DIRECTION = 'south'`
+
+`FIRST_DIR = 'south'`
+
+`SECOND_DIR = 'west'`
+
+`FIRST_DIR_PROB = 0.5`
+
+`MU = 0.5`
+
+The scenario should look like the following:
+
+<img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/432cad82-baad-4283-be65-27222134a83d" alt="weakwind" width="450" height="450">
+
+### Windy and partial observatiliy conditions (smoke, wind, no UAV)
+
+A scenario with strong windy conditions, blowing east, and late short-lasting smoke should appear. Remember that, since the dispelling counter for smoke is set in `Smoke` class by default, inside `agents.py` file, changes should be done to the `self.dispelling_counter_start_value` variable, inside `__init()__` method (`Smoke` class). Keep also in mind that `self.dispelling_counter_start_value + SMOKE_PRE_DISPELLING_COUNTER` should be greater than the amount of fuel assigned to each cell (`FUEL_UPPER_LIMIT`), in order to avoid situations in which smoke dissipates before the end of the cell’s burning process.
+
+`NUM_AGENTS = 0`
+
+`ACTIVATE_WIND = True`
+
+`ACTIVATE_SMOKE = True`
+
+`PROBABILITY_MAP = False`
+
+`FIXED_WIND = True`
+
+`WIND_DIRECTION = 'east'`
+
+`MU = 0.95`
+
+`SMOKE_PRE_DISPELLING_COUNTER = 7`
+
+`self.dispelling_counter_start_value = 4`
+
+The scenario should look like the following:
+
+<img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/bd80d0c5-9a76-4696-98d2-009b9c3bd7e3" alt="eastshortsmoke" width="450" height="450">
+
+### 2 UAV with small partial areas (normal conditions)
+
+A scenario with 2 UAV having small partial areas in normal conditions should appear.
+
+`NUM_AGENTS = 2`
+
+`ACTIVATE_WIND = False`
+
+`ACTIVATE_SMOKE = False`
+
+`PROBABILITY_MAP = False`
+
+`UAV_OBSERVATION_RADIUS = 3`
+
+The scenario should look like the following:
+
+<img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/ca59cf8e-0389-430c-a4e9-bdba2377fcd0" alt="2UAV" width="450" height="450">
+
+### 3 UAV with big partial areas (smoke, no wind)
+
+A scenario with 3 UAV having small partial areas, with fast long-lasting smoke, should appear.
+
+`NUM_AGENTS = 3`
+
+`ACTIVATE_WIND = False`
+
+`ACTIVATE_SMOKE = True`
+
+`PROBABILITY_MAP = False`
+
+`SMOKE_PRE_DISPELLING_COUNTER = 2`
+
+`self.dispelling_counter_start_value = 9`
+
+`UAV_OBSERVATION_RADIUS = 12`
+
+The scenario should look like the following:
+
+<img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/48265d89-401c-41e3-807f-48e2d4114da5" alt="3UAV" width="450" height="450">
+
+### Probabaility map
+
+A scenario with normal conditions should appear. Keep in mind that changing wind conditions will affect to the visualized probabilitites. Also, remember to set 0 UAV when showing the fire probability map. Remember to set 0 UAV when showing the fire probability map.
+
+`NUM_AGENTS = 0`
+
+`ACTIVATE_WIND = False`
+
+`ACTIVATE_SMOKE = False`
+
+`PROBABILITY_MAP = True`
+
+The scenario should look like the following:
+
+<img src="https://github.com/envilk/Wildfire-UAVSim/assets/25938116/6d2aa43e-f037-456e-a90b-561d2e5d4116" alt="probmap" width="450" height="450">
+
