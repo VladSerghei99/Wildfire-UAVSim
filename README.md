@@ -27,6 +27,8 @@ This python file holds the variables used to set the simulation execution config
 
 ### `Canvas_Grid_Visualization.py`
 
+This python file contains a Mesa class, modified for making UAV observation areas visible on the graphical web interface. It is not really necessary to change this file.
+
 # Installation setup
 
 In the following subsections, the installation process for executing the project will be explained.
@@ -41,13 +43,13 @@ Despite this project was initially tested on Ubuntu 22.04.2 LTS, it has been lat
 
 First extract the Wildfire-UAVSim downloaded package in any folder. Second, open Pycharm by executing the command `pycharm-community` in cmd, or searching for the executable in the computer.
 Then, the projects window should be opened. Next, the user has to click on `Open`, select the extracted project folder, and click `OK`. A window should appear to select between light editor, and project editor.
-Select project editor. For openning the project next tiems, repeat same process.
+Select project editor. For openning the project more times, repeat same process.
 
 ## Installing dependencies
 
 Once the project is opened, some dependencies are necessary. To install them, first go to `Settings > Project > Python Interpreter`, then select the desired Python interpreter
 for executing the project. As default `/usr/bin/python3.10` should appear in the `Python Interpreter:` tab, which already contain some default dependencies if Ubuntu 22.04.2 LTS is installed. For other Python interpreters,
-other dependencies may be needed to be installed. On the same Pycharm configuration window, click on `+` icon, and search for the following dependencies (The user should specify the same version as the one used when developing the project. The version can be specified by clicking on the "Specify version" checkbox):
+other dependencies may be needed to be installed. On the same Pycharm configuration window, click on `+` icon, and search for the following dependencies (the user should specify the same version as the one used when developing the project. Version can be specified by clicking on the "Specify version" checkbox):
 
 <ul>
   <li>Mesa (v.1.2.1)</li>
@@ -62,7 +64,7 @@ A web page interface should appear, with the wildfire grid, and buttons for conf
 
 # Graphical interface functionalities
 
-When executing the project as explained above, a web page hosted in http://127.0.0.1:8521/ should appear in user's default browser. Port can be modified in `main.py` file if user has that the default one already busy. The graphical interface should look like:
+When executing the project as explained above, a web page hosted in http://127.0.0.1:8521/ should appear in user's default browser. Port can be modified in `main.py` file if user has the default one already busy.
 
 The relevant graphical interface elements are:
 
@@ -100,7 +102,7 @@ Global variables are used in the project to configure different simulation execu
 
 `BATCH_SIZE`: It establishes how long the simulation will run, in number of time steps.
 
-`WIDTH`, `HEIGHT`: It sets the grid size (forest area size) in cells.
+`WIDTH`, `HEIGHT`: They set the grid size (forest area size) in cells.
 
 `BURNING_RATE`: It sets the fuel decay speed in terms of time steps.
 
@@ -194,9 +196,9 @@ Concretely, a scenario with two weak wind components should appear, first with 5
 
 `MU = 0.5`
 
-### Windy and partial observatiliy conditions (smoke, wind, no UAV)
+### Windy and partial observabiliy conditions (smoke, wind, no UAV)
 
-A scenario with strong windy conditions, blowing east, and late short-lasting smoke should appear. Remember that, since the dispelling counter for smoke is set in `Smoke` class by default, inside `agents.py` file, changes should be done to the `self.dispelling_counter_start_value` variable, inside `__init()__` method (`Smoke` class). Keep also in mind that `self.dispelling_counter_start_value + SMOKE_PRE_DISPELLING_COUNTER` should be greater than the amount of fuel assigned to each cell (`FUEL_UPPER_LIMIT`), in order to avoid situations in which smoke dissipates before the end of the cell’s burning process.
+A scenario with strong windy conditions, blowing east, and late short-lasting smoke should appear. Remember that, since the dispelling counter for smoke is set in `Smoke` class by default, inside `agents.py` file, changes should be done to the `self.dispelling_counter_start_value` variable, inside `__init()__` method (`Smoke` class). Keep also in mind that `self.dispelling_counter_start_value + SMOKE_PRE_DISPELLING_COUNTER` should be greater than the amount of fuel assigned to each cell (for taking less risks, compare to `FUEL_UPPER_LIMIT`, which is the maximum possible amount of fuel of each cell), in order to avoid situations in which smoke dissipates before the end of the cell’s burning process.
 
 `NUM_AGENTS = 0`
 
@@ -232,7 +234,7 @@ A scenario with 2 UAV having small partial areas in normal conditions should app
 
 ### 3 UAV with big partial areas (smoke, no wind)
 
-A scenario with 3 UAV having small partial areas, with fast long-lasting smoke, should appear.
+A scenario with 3 UAV having big partial areas, with fast long-lasting smoke, should appear.
 
 `NUM_AGENTS = 3`
 
@@ -250,7 +252,7 @@ A scenario with 3 UAV having small partial areas, with fast long-lasting smoke, 
 
 ### Probabaility map
 
-A scenario with normal conditions should appear. Keep in mind that changing wind conditions will affect to the visualized probabilitites. Also, remember to set 0 UAV when showing the fire probability map. Remember to set 0 UAV when showing the fire probability map.
+A scenario with normal conditions should appear. Keep in mind that changing wind conditions will affect to the visualized probabilitites. Also, remember to set 0 UAV when showing the fire probability map.
 
 `NUM_AGENTS = 0`
 
