@@ -69,7 +69,7 @@ class WildFireModel(mesa.Model):
         self.datacollector = mesa.DataCollector()
         self.new_direction = [0 for a in range(0, self.NUM_AGENTS)]
 
-    # function that create all fire agents in a grid
+    # function that creates all fire agents in a grid
     def set_fire_agents(self):
         # obtain center position of the grid
         x_c = int(HEIGHT / 2)
@@ -109,7 +109,7 @@ class WildFireModel(mesa.Model):
                 agent.selected_dir = self.new_direction[self.new_direction_counter]
                 self.new_direction_counter += 1
 
-    # this method obtains effective wildfire monitoring (MR1) for time step t
+    # this method obtains effective wildfire monitoring metric (MR1) for time step t
     def MR1(self, state):
         # total amount of burning cells from state variable
         MR1_reward = [sum(aux_state) for aux_state in state]
@@ -137,7 +137,7 @@ class WildFireModel(mesa.Model):
                 y2 = a.pos[1]
                 # Euclidean distance between two UAV grid positions
                 distance = euclidean_distance(x1, y1, x2, y2)
-                # if distance between the two UAVs is less than the defined security distance, add 1 to the counter
+                # if distance between the two UAV is less than the defined security distance, add 1 to the counter
                 if distance < SECURITY_DISTANCE:
                     counter += 1
         self.MR2_VALUE += counter // 2  # remove duplicate interactions
@@ -151,7 +151,7 @@ class WildFireModel(mesa.Model):
                 surrounding_states = agent.surrounding_states()
                 states.append(surrounding_states)
 
-        # this for loop adds a zero in those positions of the list that would correspond to cells that cannot be
+        # this for loop adds zeros in those positions of the list that would correspond to cells that cannot be
         # observed. This is done when a UAV reaches an edge/corner, not getting the list in the corresponding format
         # Mesa framework asks for
         for st, _ in enumerate(states):
@@ -174,9 +174,6 @@ class WildFireModel(mesa.Model):
             sys.exit(0)
 
         if sum(isinstance(i, agents.UAV) for i in self.schedule.agents) > 0:
-            # check if simulation ended, if so print MR1 and MR2 overall metrics, and finish loop. Otherwise,
-            # keep executing.
-
             state = self.state()  # s_t
             # self.new_direction is used to execute previous obtained a_t
             self.new_direction = [SYSTEM_RANDOM.choice(range(0, N_ACTIONS))

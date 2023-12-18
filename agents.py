@@ -26,15 +26,15 @@ class Fire(mesa.Agent):
         # smoke
         self.smoke = Smoke(fire_cell_fuel=self.fuel)
 
-    # checks if a certain Fire agent is burning | True if burning, False if not
+    # checks if the corresponding Fire agent is burning | True if burning, False if not
     def is_burning(self):
         return self.burning
 
-    # get a certain Fire agent remaining fuel | Integer value
+    # get the corresponding Fire agent remaining fuel | Integer value
     def get_fuel(self):
         return round(self.fuel)
 
-    # get a certain Fire agent
+    # get the corresponding Fire agent burning probability
     def get_prob(self):
         return self.cell_prob
 
@@ -106,7 +106,7 @@ class Smoke:
 
     # constructor
     def __init__(self, fire_cell_fuel):
-        self.smoke = False  # activated when fire ignites
+        self.smoke = False
         self.dispelling_counter_start_value = fire_cell_fuel
         self.dispelling_lower_bound_start_value = SMOKE_PRE_DISPELLING_COUNTER
         self.dispelling_lower_bound = self.dispelling_lower_bound_start_value
@@ -208,8 +208,8 @@ class UAV(mesa.Agent):
         self.moore = True
         self.selected_dir = 0
 
-    # function that checks if a UAV in a certain position (pos), has another UAV nearby. If so, it can't move, otherwise
-    # it will be possible to move.
+    # function that checks if an UAV in a certain position (pos), has another UAV nearby. If so, it can't move,
+    # otherwise it will be possible to move.
     def not_UAV_adjacent(self, pos):
         can_move = True
         agents_in_pos = self.model.grid.get_cell_list_contents([pos])
@@ -253,6 +253,5 @@ class UAV(mesa.Agent):
 
     # Mesa framework native method, which is overwritten, necessary for executing changes made in step() method
     # (as it can be seen, in this case UAVs don't need to update anything in step() method, so it isn't overwritten).
-    # This logic is required to not update the overall grid state until all cells step() method where executed.
     def advance(self):
         self.move()
