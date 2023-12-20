@@ -1,6 +1,6 @@
 # Project overview
 
-## Project descritpion
+## Project description
 
 Wildfire-UAVSim is a customizable wildfire tracking simulator that enables
 the evaluation of diverse adaptation strategies. Among its many configuration parameters, the forest area is customizable with different densities of vegetation, as well as fire and smoke dispersion patterns that are affected by factors such as wind, conforming different observability conditions. The configuration options of our simulator also allow to place a team of UAVs in charge of tracking the fire over the forest area. Wildfire-UAVSim provides a graphical web interface native from Mesa framework, executed by the simulator, in order to keep track of how the simulation evolves in time.
@@ -35,13 +35,13 @@ In the following subsections, the installation process for executing the project
 
 ## Installing Pycharm Community Edition IDE
 
-The first step is to download and install Pycharm Community Edition IDE to easily run and setup the project and its dependencies. For Linux users (this project was initially tested on Ubuntu 22.04.2 LTS), they can use the `snap` command in cmd (pre-installed from Ubuntu 16.04 LTS and later) as a fast installation option. Users must execute the command `sudo snap install pycharm-community --classic` in cmd for installing Pycharm Community Edition.
+The first step is to download and install Pycharm Community Edition IDE to easily run and set up the project and its dependencies. For Linux users (this project was initially tested on Ubuntu 22.04.2 LTS), they can use the `snap` command in cmd (pre-installed from Ubuntu 16.04 LTS and later) as a fast installation option. Users must execute the command `sudo snap install pycharm-community --classic` in cmd for installing Pycharm Community Edition.
 
 Despite this project was initially tested on Ubuntu 22.04.2 LTS, it has been later tested on Windows and Mac too. For checking system requirements, and information about the installation process, please visit https://www.jetbrains.com/help/pycharm/installation-guide.html.
 
 ## Opening the project
 
-First extract the Wildfire-UAVSim downloaded package in any folder. Second, open Pycharm by executing the command `pycharm-community` in cmd, or searching for the executable in the computer.
+First, extract the Wildfire-UAVSim downloaded package in any folder. Second, open Pycharm by executing the command `pycharm-community` in cmd, or searching for the executable in the computer.
 Then, the projects window should be opened. Next, the user has to click on `Open`, select the extracted project folder, and click `OK`. A window should appear to select between light editor, and project editor.
 Select project editor. For openning the project more times, repeat same process.
 
@@ -136,7 +136,7 @@ percentage of the grid covered by vegetation.
 
 `N_ACTIONS`: Specifies the number of possible actions each UAV can take when deciding on a move, which by default is set as `[north, east, west, south]`.
 
-`UAV_OBSERVATION_RADIUS`: It sets the observation radius—technically it is not really a radius, since observed areas have square shapes.
+`UAV_OBSERVATION_RADIUS`: It sets the observation radius—technically it is not a radius, since observed areas have square shapes.
 
 `SECURITY_DISTANCE`: It establishes the minimum distance that UAVs should be separated from each other for avoiding collisions.
 
@@ -174,7 +174,7 @@ A scenario with no wind, smoke, or UAV, should appear.
 
 ### Windy conditions (no smoke, wind, no UAV)
 
-Concretely, a scenario with two weak wind components should appear, first with 50% of south component, and a second west component with 50%. In this scenario, neither smoke or UAV should appear.
+Concretely, a scenario with two weak wind components should appear, first with 50% of south component, and a second west component with 50%. In this scenario, neither smoke nor UAV should appear.
 
 `NUM_AGENTS = 0`
 
