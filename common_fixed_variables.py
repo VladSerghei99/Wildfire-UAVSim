@@ -12,7 +12,7 @@ ACTIVATE_SMOKE = False
 ACTIVATE_WIND = False
 # To avoid throwing "KeyError: 'Layer'" when prob burning maps are shown (so UAV won't get its "Layer" attribute in the
 # "portrayal_method(obj)"), NUM_AGENTS must be set to 0.
-PROBABILITY_MAP = True
+PROBABILITY_MAP = False
 
 # model params specifications
 
