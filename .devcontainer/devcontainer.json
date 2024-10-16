@@ -1,0 +1,22 @@
+{
+    "name": "fas-dev",
+
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "streetsidesoftware.code-spell-checker",
+            ]
+        }
+    },
+    "capAdd": ["SYS_PTRACE"],
+    "securityOpt": [ "seccomp=unconfined" ],
+
+    // If you need more ports forwarded, add them here
+    "forwardPorts": [8521
+    ]
+
+}
