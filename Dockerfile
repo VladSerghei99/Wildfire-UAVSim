@@ -12,4 +12,4 @@ RUN apt install -y python3 python3-pip
 
 RUN pip install mesa numpy matplotlib
 
-CMD python3 Wildfire-UAVSim/main.py
+CMD python3 /code/main.py
