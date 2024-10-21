@@ -2,13 +2,13 @@
 	build
 
 run:build
-	docker run --name Wildfire-UAVSimContainer -v .:/code -p 8521:8521/tcp -p 8521:8521/udp wildfire-uvasim-image:latest
+	docker run -it --name Wildfire-UAVSimContainer -v .:/code -p 8521:8521/tcp -p 8521:8521/udp wildfire-uvasim-image:latest
 
 build:remove
 	docker build -t wildfire-uvasim-image:latest .
 
 runFirst:buildFirst
-	docker run --name Wildfire-UAVSimContainer -v .:/code -p 8521:8521/tcp -p 8521:8521/udp wildfire-uvasim-image:latest
+	docker run -it --name Wildfire-UAVSimContainer -v .:/code -p 8521:8521/tcp -p 8521:8521/udp wildfire-uvasim-image:latest
 
 buildFirst:
 	docker build -t wildfire-uvasim-image:latest .
