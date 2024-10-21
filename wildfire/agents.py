@@ -5,7 +5,7 @@ import functools
 
 # own python modules
 
-from .common_fixed_variables import *
+from common_fixed_variables import *
 
 
 # Class Fire holds methods for managing Fire agents

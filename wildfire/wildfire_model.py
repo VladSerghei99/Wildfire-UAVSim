@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 
 # own python modules
 
-from . import agents
+import agents
 
-from .common_fixed_variables import *
+import common_fixed_variables
 
 
 # class WildFireModel holds methods for managing the main logic of the grid, such as the main execution loop,
@@ -28,7 +28,8 @@ class WildFireModel(mesa.Model):
         self.unique_agents_id = None
         self.new_direction = None
         self.evaluation_timesteps_counter = None
-        self.NUM_AGENTS = NUM_AGENTS
+        print(f"Creating WildFireModel with {common_fixed_variables.NUM_AGENTS} agents.")
+        self.NUM_AGENTS = common_fixed_variables.NUM_AGENTS
         print(self.NUM_AGENTS)
 
         self.MR1_LIST = [0.0 for i in range(0, self.NUM_AGENTS)]
@@ -45,14 +46,14 @@ class WildFireModel(mesa.Model):
         # Inverted width and height order, because of matrix accessing purposes, like in many examples:
         #   https://snyk.io/advisor/python/Mesa/functions/mesa.space.MultiGrid
         # set some Mesa framework management
-        self.grid = mesa.space.MultiGrid(HEIGHT, WIDTH, False)
+        self.grid = mesa.space.MultiGrid(common_fixed_variables.HEIGHT, common_fixed_variables.WIDTH, False)
         self.schedule = mesa.time.SimultaneousActivation(self)
         # set Fire and wind agents (Smoke are created inside Fire agents as well)
         self.set_fire_agents()
         self.wind = agents.Wind()
 
-        x_center = int(HEIGHT / 2)
-        y_center = int(WIDTH / 2)
+        x_center = int(common_fixed_variables.HEIGHT / 2)
+        y_center = int(common_fixed_variables.WIDTH / 2)
 
         self.new_direction_counter = 0
         self.evaluation_timesteps_counter = 0
@@ -72,15 +73,15 @@ class WildFireModel(mesa.Model):
     # function that creates all fire agents in a grid
     def set_fire_agents(self):
         # obtain center position of the grid
-        x_c = int(HEIGHT / 2)
-        y_c = int(WIDTH / 2)
+        x_c = int(common_fixed_variables.HEIGHT / 2)
+        y_c = int(common_fixed_variables.WIDTH / 2)
         x = [x_c]
         y = [y_c]
-        for i in range(HEIGHT):
-            for j in range(WIDTH):
+        for i in range(common_fixed_variables.HEIGHT):
+            for j in range(common_fixed_variables.WIDTH):
                 # decides to put a "tree" (fire agent) or not, if less than DENSITY_PROB
                 # or if it is in the center of the grid
-                if SYSTEM_RANDOM.random() < DENSITY_PROB or (i in x and j in y):
+                if common_fixed_variables.SYSTEM_RANDOM.random() < common_fixed_variables.DENSITY_PROB or (i in x and j in y):
                     # only if it is in the center of the grid, Fire agent is set burning at the beginning, otherwise
                     # it is set to not burning
                     if i in x and j in y:
@@ -114,7 +115,7 @@ class WildFireModel(mesa.Model):
         # total amount of burning cells from state variable
         MR1_reward = [sum(aux_state) for aux_state in state]
         # normalized reward amount for each UAV state
-        reward = [normalize(float(reward), N_OBSERVATIONS, 1, 0) for reward in MR1_reward]
+        reward = [common_fixed_variables.normalize(float(reward), common_fixed_variables.N_OBSERVATIONS, 1, 0) for reward in MR1_reward]
         # MR1_list with added rewards
         self.MR1_LIST = [a + b for a, b in zip(self.MR1_LIST, reward)]
 
@@ -136,9 +137,9 @@ class WildFireModel(mesa.Model):
                 x2 = a.pos[0]
                 y2 = a.pos[1]
                 # Euclidean distance between two UAV grid positions
-                distance = euclidean_distance(x1, y1, x2, y2)
+                distance = common_fixed_variables.euclidean_distance(x1, y1, x2, y2)
                 # if distance between the two UAV is less than the defined security distance, add 1 to the counter
-                if distance < SECURITY_DISTANCE:
+                if distance < common_fixed_variables.SECURITY_DISTANCE:
                     counter += 1
         self.MR2_VALUE += counter // 2  # remove duplicate interactions
 
@@ -156,7 +157,7 @@ class WildFireModel(mesa.Model):
         # Mesa framework asks for
         for st, _ in enumerate(states):
             counter = len(states[st])
-            for i in range(counter, N_OBSERVATIONS):
+            for i in range(counter, common_fixed_variables.N_OBSERVATIONS):
                 states[st].append(0)
         return states
 
@@ -166,7 +167,7 @@ class WildFireModel(mesa.Model):
 
         # check if simulation ended, if so print MR1 and MR2 overall metrics,
         # and finish loop. Otherwise, keep executing.
-        if BATCH_SIZE == self.evaluation_timesteps_counter - 1:
+        if common_fixed_variables.BATCH_SIZE == self.evaluation_timesteps_counter - 1:
             print(" --- MR1 --- ")
             print(self.MR1_LIST)
             print(" --- MR2 --- ")
@@ -176,7 +177,7 @@ class WildFireModel(mesa.Model):
         if sum(isinstance(i, agents.UAV) for i in self.schedule.agents) > 0:
             state = self.state()  # s_t
             # self.new_direction is used to execute previous obtained a_t
-            self.new_direction = [SYSTEM_RANDOM.choice(range(0, N_ACTIONS))
+            self.new_direction = [common_fixed_variables.SYSTEM_RANDOM.choice(range(0, common_fixed_variables.N_ACTIONS))
                                   for i in range(0, self.NUM_AGENTS)]  # a_t
 
             # TODO: algorithm/s calculation with partial state
