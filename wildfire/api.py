@@ -1,4 +1,5 @@
 import os.path
+import sys
 
 from flask import Flask, Response, request
 from threading import Thread
@@ -12,20 +13,36 @@ import main
 from agents import UAV
 
 SCHEMAS_PATH = "schemas"
+PAGES_PATH = "pages"
 
 
 def create_app(test_config=None):
-    # global NUM_AGENTS
-    app = Flask(__name__, instance_relative_config=True)
-
     values.NUM_AGENTS = 3
+
+    app = Flask(__name__, instance_relative_config=True)
 
     wildfire = Thread(target=main.main, args=(), daemon=True)
     wildfire.start()
 
+    @app.route("/")
+    def index():
+        try:
+            page = get_page("index.html")
+            return Response(
+                response=page,
+                status=200,
+                mimetype='text/html'
+            )
+        except Exception as e:
+            return Response(response=e.with_traceback().__str__(),
+                            status=500,
+                            mimetype='text/html')
+
+
     @app.route("/monitor")
     def monitor():
         try:
+            print(f"Server is ready: {main.SERVER}")
             data = get_monitor_data(main.SERVER.model)
             return Response(
                 response=json.dumps(data),
@@ -33,7 +50,7 @@ def create_app(test_config=None):
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.__str__(),
+            return Response(response=e.with_traceback().__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -47,7 +64,7 @@ def create_app(test_config=None):
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.__str__(),
+            return Response(response=e.with_traceback().__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -61,7 +78,7 @@ def create_app(test_config=None):
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.__str__(),
+            return Response(response=e.with_traceback().__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -75,7 +92,7 @@ def create_app(test_config=None):
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.__str__(),
+            return Response(response=e.with_traceback().__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -89,7 +106,7 @@ def create_app(test_config=None):
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.__str__(),
+            return Response(response=e.with_traceback().__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -103,7 +120,7 @@ def create_app(test_config=None):
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.__str__(),
+            return Response(response=e.with_traceback().__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -180,6 +197,14 @@ def get_schema(filename: str) -> str:
         schema = f.read()
     return schema
 
+def get_page(filename: str) -> str:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    pages_dir = os.path.join(current_dir, PAGES_PATH)
+    page_file = os.path.join(pages_dir, filename)
+    with open(page_file) as f:
+        page = f.read()
+    return page
+
 
 def set_uav_directions(directions: list[int], model: WildFireModel):
     # uavs = get_uav_details(model)[1]
@@ -190,4 +215,5 @@ def set_uav_directions(directions: list[int], model: WildFireModel):
 
 
 if __name__ == '__main__':
-    create_app().run(port=8000)
+    print("\n\n ## WildFire REST API available at http://127.0.0.1:55555 ##\n\n")
+    create_app().run(host="172.17.0.2", port=55555) # Default docker bridge address is 172.17.0.2
