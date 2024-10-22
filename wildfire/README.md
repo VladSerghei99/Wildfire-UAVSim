@@ -1,66 +1,76 @@
 # Project overview
 
-## Project description
+## Project Description
 
 Wildfire-UAVSim is a customizable wildfire tracking simulator that enables
 the evaluation of diverse adaptation strategies. Among its many configuration parameters, the forest area is customizable with different densities of vegetation, as well as fire and smoke dispersion patterns that are affected by factors such as wind, conforming different observability conditions. The configuration options of our simulator also allow to place a team of UAVs in charge of tracking the fire over the forest area. Wildfire-UAVSim provides a graphical web interface native from Mesa framework, executed by the simulator, in order to keep track of how the simulation evolves in time.
 
-## Files structure
+## File Structure
 
-5 Python files compose the project structure, namely:
+Several files compose the project structure, namely:
 
-### `agents.py`
+- [`/wildfire/`](/wildfire)
+  - [`api.py`](/wildfire/api.py) holds the Flask REST API implementation. This is the entrypoint of the application.
+  - [`agents.py`](/wildfire/agents.py) holds the logic for managing elements such as Fire, Smoke, Wind and UAVs.
+  - [`wildfire_model.py`](/wildfire/wildfire_model.py) holds the logic for managing the wildfire simulation, by utilizing elements from [agents.py](/wildfire/agents.py).
+  - [`main.py`](/wildfire/main.py) allows to execute the wildfire simulation built in [widlfire_model.py](/wildfire/wildfire_model.py) file.
+  - [`common_fixed_variables.py`](/wildfire/common_fixed_variables.py) holds the variables used to set the simulation execution configurations.
+  - [`Canvas_Grid_Visualisation.py`](/wildfire/Canvas_Grid_Visualization.py) contains a Mesa class, modified for making UAV observation areas visible on the graphical web interface. It is not really necessary to change this file.
+  - [`/schemas/`](/wildfire/schemas)
+    - [`adaptation_options_schema.json`](/wildfire/schemas/adaptation_options_schema.json) holds the JSON schema for the adaptations options JSON response body.
+    - [`monitor_schema.json`](/wildfire/schemas/monitor_schema.json) holds the JSON schema for the monitor JSON response body.
+    - [`execute_schema.json`](/wildfire/schemas/execute_schema.json) holds the JSON schema for the execute JSON request body.
+  - [`/pages/`](/wildfire/pages)
+    - [`index.html`](/wildfire/pages/index.html) the HTML page containing a brief API explanation. It can be accessed by sending a `GET` request to the `/` API endpoint.
 
-This python file holds the logic for managing elements such as Fire, Smoke, Wind and UAVs.
-
-### `widlfire_model.py`
-
-This python file holds the logic for managing the wildfire simulation, by utilizing elements from `agents.py` file.
-
-### `main.py`
-
-This python file allows to execute the wildfire simulation built in `widlfire_model.py` file.
-
-### `common_fixed_variables.py`
-
-This python file holds the variables used to set the simulation execution configurations.
-
-### `Canvas_Grid_Visualization.py`
-
-This python file contains a Mesa class, modified for making UAV observation areas visible on the graphical web interface. It is not really necessary to change this file.
-
-# Installation setup
+# Installation Setup
 
 In the following subsections, the installation process for executing the project will be explained.
 
-## Installing Pycharm Community Edition IDE
+## Make
 
-The first step is to download and install Pycharm Community Edition IDE to easily run and set up the project and its dependencies. For Linux users (this project was initially tested on Ubuntu 22.04.2 LTS), they can use the `snap` command in cmd (pre-installed from Ubuntu 16.04 LTS and later) as a fast installation option. Users must execute the command `sudo snap install pycharm-community --classic` in cmd for installing Pycharm Community Edition.
+Make is needed to build and run the docker image using the provided Makefile. You do not have to use the Makefile,
+and can choose to run the commands manually instead, but it will make life easier.
 
-Despite this project was initially tested on Ubuntu 22.04.2 LTS, it has been later tested on Windows and Mac too. For checking system requirements, and information about the installation process, please visit https://www.jetbrains.com/help/pycharm/installation-guide.html.
+- If you are on Windows, you can download [Make for Windows](https://gnuwin32.sourceforge.net/packages/make.htm)
+- If you are on Linux:
+  - Check if you have make: `make -version`. If you are given output stating the Make version, you have it installed.
+  - If not, install make: 
+    ```commandline
+    sudo apt-get update
+    sudo apt-get install make
+    ```
 
-## Opening the project
+## Docker
 
-First, extract the Wildfire-UAVSim downloaded package in any folder. Second, open Pycharm by executing the command `pycharm-community` in cmd, or searching for the executable in the computer.
-Then, the projects window should be opened. Next, the user has to click on `Open`, select the extracted project folder, and click `OK`. A window should appear to select between light editor, and project editor.
-Select project editor. For openning the project more times, repeat same process.
+Installing Docker is required in order to build and run the image containing the exemplar. You can find out how to do 
+so for your operating system on the [Docker website](https://docs.docker.com/get-started/get-docker/).
 
-## Installing dependencies
+# Execution
 
-Once the project is opened, some dependencies are necessary. To install them, first go to `Settings > Project > Python Interpreter`, then select the desired Python interpreter
-for executing the project. As default `/usr/bin/python3.10` should appear in the `Python Interpreter:` tab, which already contain some default dependencies if Ubuntu 22.04.2 LTS is installed. For other Python interpreters,
-other dependencies may be needed to be installed. On the same Pycharm configuration window, click on `+` icon, and search for the following dependencies (the user should specify the same version as the one used when developing the project. Version can be specified by clicking on the "Specify version" checkbox):
+The exemplar runs inside of a Docker container. You can interact with it through the REST API and the web interface.
 
-<ul>
-  <li>Mesa (v.1.2.1)</li>
-  <li>numpy (v1.24.2)</li>
-  <li>matplotlib (v3.7.1)</li>
-</ul>
+To run the docker container, navigate to the folder containing the [`Makefile`](/Makefile), open a terminal, and execute:
+```commandline
+make run
+```
+> **NOTE**: The first time you run the container, you will need to run `make runFirst` instead of `make run`.
 
-## Execution of the project
+You can hit `Ctrl+C` in this terminal window to terminate the process, which should also stop the container. If the 
+container does not stop, you can use:
+```commandline
+make stop
+```
+To remove the container and image, you can run:
+```commandline
+make clean
+```
 
-Once project is opened, and dependencies were installed, `main.py` can be executed by selecting the file, right mouse click, and clicking on `Run 'main'` (shortcut should be `Ctrl+Mayus+F10`).
-A web page interface should appear, with the wildfire grid, and buttons for configuring the simulation.
+You can find the web interface at [http://127.0.0.1:8521/](http://127.0.0.1:8521/).
+
+The REST API can be reached at [http://127.0.0.1:55555/](http://127.0.0.1:55555/). (_Note that the terminal output will
+claim the API is running at `172.17.0.2:55555` instead. This is its address **within** the container, and you can ignore
+this difference._)
 
 # Graphical interface functionalities
 
@@ -74,11 +84,12 @@ The grid with generated cells, with vegetation, fire, smoke, and UAVs, can be se
 
 ### `Start button`
 
-The start button allows to run the simulation without stopping.
+The start button allows to run the simulation without having to repeatedly click `Step`.
 
 ### `Step button`
 
-The step button allows to execute one time step at a time.
+The step button allows to execute one time step at a time. This will block until a `PUT` request to `/execute` specifies
+the drone directions for the step. To experiment with this, you can use [Postman](https://www.postman.com/downloads/).
 
 ### `Reset button`
 

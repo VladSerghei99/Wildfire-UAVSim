@@ -6,7 +6,7 @@ RUN apt update && apt upgrade -y
 
 RUN apt install -y python3 python3-pip
 
-RUN pip install mesa numpy matplotlib
+RUN pip install mesa numpy matplotlib flask
 
 # Add custom user "dev" with sudo permissions
 RUN useradd dev -u 1000 -m -s /bin/bash && \
