@@ -8,8 +8,8 @@ RUN apt upgrade
 
 RUN apt install -y python3 python3-pip
 
-RUN pip install mesa numpy matplotlib
+RUN pip install mesa numpy matplotlib flask
 
-COPY ./*.py /code
+COPY ./wildfire/ /code/
 
-CMD python3 /code/main.py
+CMD python3 /code/wildfire/api.py
