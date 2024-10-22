@@ -3,6 +3,7 @@
 import sys
 import mesa
 import matplotlib.pyplot as plt
+from threading import Condition  # used to block waiting for REST API commands
 
 # own python modules
 
@@ -28,12 +29,12 @@ class WildFireModel(mesa.Model):
         self.unique_agents_id = None
         self.new_direction = None
         self.evaluation_timesteps_counter = None
-        print(f"Creating WildFireModel with {common_fixed_variables.NUM_AGENTS} agents.")
         self.NUM_AGENTS = common_fixed_variables.NUM_AGENTS
-        print(self.NUM_AGENTS)
 
         self.MR1_LIST = [0.0 for i in range(0, self.NUM_AGENTS)]
         self.MR2_VALUE = 0
+        self.next_step_available = Condition()
+        self.last_step_seen = -1
 
         self.reset()
 
@@ -163,6 +164,13 @@ class WildFireModel(mesa.Model):
 
     # Mesa framework native method, which is overwritten, necessary for setting next state of the simulation
     def step(self):
+        # Wait for REST API update
+        with (self.next_step_available):
+            while (self.last_step_seen < self.evaluation_timesteps_counter):
+                print(f"[WildFireModel.step()] Last step seen: {self.last_step_seen}. Waiting for info for {self.evaluation_timesteps_counter}...")
+                self.next_step_available.wait()
+        print(f"[WildFireModel.step()] Information received for step {self.evaluation_timesteps_counter}.")
+
         self.datacollector.collect(self)
 
         # check if simulation ended, if so print MR1 and MR2 overall metrics,
@@ -176,9 +184,11 @@ class WildFireModel(mesa.Model):
 
         if sum(isinstance(i, agents.UAV) for i in self.schedule.agents) > 0:
             state = self.state()  # s_t
-            # self.new_direction is used to execute previous obtained a_t
-            self.new_direction = [common_fixed_variables.SYSTEM_RANDOM.choice(range(0, common_fixed_variables.N_ACTIONS))
-                                  for i in range(0, self.NUM_AGENTS)]  # a_t
+
+            """This is implements random movement. Removed and replaced with movements from REST API /execute (PUT)"""
+            # # self.new_direction is used to execute previous obtained a_t
+            # self.new_direction = [common_fixed_variables.SYSTEM_RANDOM.choice(range(0, common_fixed_variables.N_ACTIONS))
+            #                       for i in range(0, self.NUM_AGENTS)]  # a_t
 
             # TODO: algorithm/s calculation with partial state
             # reward = self.algorithm(state) # r_t+1

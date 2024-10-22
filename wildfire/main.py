@@ -11,7 +11,7 @@ import agents
 
 from common_fixed_variables import *
 
-MODEL = None
+SERVER = None
 
 # creates agent dictionary for rendering it on Canvas Gird from Mesa framework
 def agent_portrayal(agent):
@@ -43,7 +43,7 @@ def agent_portrayal(agent):
 
 # function that holds the main logic, in which the wildfire simulation and the web page interface are launched
 def main():
-    global MODEL
+    global SERVER
     print('actions:', N_ACTIONS)
     print('observations:', N_OBSERVATIONS)
 
@@ -52,7 +52,7 @@ def main():
     # initialize Modular server for mesa Python visualization
     server = mesa.visualization.ModularServer(wildfire_model.WildFireModel, [grid], "WildFire Model")
     server.port = 8521  # default port, others can be set
-    MODEL = server.model # Save model so we can access it in the REST API
+    SERVER = server # Save model so we can access it in the REST API
     server.launch()
 
 
