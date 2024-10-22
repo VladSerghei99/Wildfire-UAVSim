@@ -1,5 +1,5 @@
 {
-  "title": "WildFire Monitor",
+  "title": "WildFire Adaptation Options Scheme",
   "description": "All values which can be changed at runtime in the WildFire exemplar",
   "type": "object",
   "properties": {

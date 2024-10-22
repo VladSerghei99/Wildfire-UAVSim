@@ -1,5 +1,5 @@
 {
-  "title": "WildFire Monitor",
+  "title": "WildFire Monitor Scheme",
   "description": "All monitorable values within the WildFire exemplar",
   "type": "object",
   "properties": {

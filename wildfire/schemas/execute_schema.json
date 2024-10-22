@@ -1,5 +1,5 @@
 {
-  "title": "WildFire execute schema",
+  "title": "WildFire Execute Scheme",
   "description": "The values which can be changed at runtime in the WildFire exemplar",
   "type": "object",
   "properties": {
