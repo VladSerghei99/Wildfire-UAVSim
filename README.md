@@ -207,7 +207,7 @@ Concretely, a scenario with two weak wind components should appear, first with 5
 
 `MU = 0.5`
 
-### Windy and partial observabiliy conditions (smoke, wind, no UAV)
+### Windy and partial observability conditions (smoke, wind, no UAV)
 
 A scenario with strong windy conditions, blowing east, and late short-lasting smoke should appear. Remember that, since the dispelling counter for smoke is set in `Smoke` class by default, inside `agents.py` file, changes should be done to the `self.dispelling_counter_start_value` variable, inside `__init()__` method (`Smoke` class). Keep also in mind that `self.dispelling_counter_start_value + SMOKE_PRE_DISPELLING_COUNTER` should be greater than the amount of fuel assigned to each cell (for taking less risks, compare to `FUEL_UPPER_LIMIT`, which is the maximum possible amount of fuel of each cell), in order to avoid situations in which smoke dissipates before the end of the cell’s burning process.
 
@@ -261,7 +261,7 @@ A scenario with 3 UAV having big partial areas, with fast long-lasting smoke, sh
 
 `UAV_OBSERVATION_RADIUS = 12`
 
-### Probabaility map
+### Probability map
 
 A scenario with normal conditions should appear. Keep in mind that changing wind conditions will affect to the visualized probabilitites. Also, remember to set 0 UAV when showing the fire probability map.
 
