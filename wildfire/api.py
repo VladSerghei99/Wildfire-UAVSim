@@ -34,7 +34,7 @@ def create_app(test_config=None):
                 mimetype='text/html'
             )
         except Exception as e:
-            return Response(response=e.with_traceback().__str__(),
+            return Response(response=e.__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -50,21 +50,20 @@ def create_app(test_config=None):
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.with_traceback().__str__(),
+            return Response(response=e.__str__(),
                             status=500,
                             mimetype='text/html')
 
     @app.route("/execute", methods=['PUT'])
     def execute():
         try:
-            directions = [uav["direction"] for uav in request.json["uavDetails"]]
-            set_uav_directions(directions, main.SERVER.model)
+            set_uav_directions(request.json, main.SERVER.model)
             return Response(
                 status=200,
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.with_traceback().__str__(),
+            return Response(response=e.__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -78,7 +77,7 @@ def create_app(test_config=None):
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.with_traceback().__str__(),
+            return Response(response=e.__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -92,7 +91,7 @@ def create_app(test_config=None):
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.with_traceback().__str__(),
+            return Response(response=e.__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -106,7 +105,7 @@ def create_app(test_config=None):
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.with_traceback().__str__(),
+            return Response(response=e.__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -120,7 +119,7 @@ def create_app(test_config=None):
                 mimetype='text/json'
             )
         except Exception as e:
-            return Response(response=e.with_traceback().__str__(),
+            return Response(response=e.__str__(),
                             status=500,
                             mimetype='text/html')
 
@@ -206,9 +205,22 @@ def get_page(filename: str) -> str:
     return page
 
 
-def set_uav_directions(directions: list[int], model: WildFireModel):
-    # uavs = get_uav_details(model)[1]
+def set_uav_directions(adaptation: list[dict], model: WildFireModel):
+    uavs : list[UAV] = [agent for agent in model.schedule.agents if type(agent) is UAV]
+    directions = []
     with (model.next_step_available):
+        for model_uav in uavs:
+            found = False
+            # Try to find the direction in the adaptation execute
+            for exec_uav in adaptation["uavDetails"]:
+                if exec_uav["id"] == model_uav.unique_id:
+                    found = True
+                    directions.append(exec_uav["direction"])
+
+            # otherwise let it keep its current direction
+            if not found:
+                directions.append(model_uav.selected_dir)
+
         model.new_direction = directions
         model.last_step_seen = model.evaluation_timesteps_counter
         model.next_step_available.notify_all()
