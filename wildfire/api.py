@@ -154,7 +154,8 @@ def get_monitor_data(model: WildFireModel):
         "dynamicValues": {
             "MR1": model.MR1_LIST,
             "MR2": model.MR2_VALUE,
-            "uavDetails": get_uav_details(model)[1]
+            "uavDetails": get_uav_details(model)[1],
+            "fireDetails": get_fire_details(model)
         }
     }
 
@@ -187,6 +188,19 @@ def get_uav_details(model: WildFireModel) -> tuple[list[UAV], list[dict]]:
         })
     return uavs, uav_details
 
+def get_fire_details(model: WildFireModel) -> list[dict]:
+    cells = [agent for agent in model.schedule.agents if type(agent) is not UAV]
+    fire_details = []
+    for cell in cells:
+        fire_details.append({
+            "x": cell.pos[0],
+            "y": cell.pos[1],
+            "burning": cell.is_burning(),
+            "smoke": cell.smoke.is_smoke_active(),
+            "burnProbability": cell.probability_of_fire(),
+            "fuel": cell.get_fuel()
+        })
+    return fire_details
 
 def get_schema(filename: str) -> str:
     current_dir = os.path.dirname(os.path.abspath(__file__))

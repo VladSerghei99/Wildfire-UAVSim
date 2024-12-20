@@ -16,8 +16,8 @@
           },
           "direction": {
             "description": "The direction that the drone is heading",
-            "type": "string",
-            "enum": ["left", "right", "up", "down"]
+            "type": "integer",
+            "enum": [0, 1, 2, 3]
           }
         }
       }

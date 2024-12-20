@@ -156,6 +156,39 @@
               }
             }
           }
+        },
+        "fireDetails": {
+          "description": "A list of the relevant details of each cell on the map",
+          "type": "array",
+          "items":{
+            "type": "object",
+            "description": "The relevant details of one cell",
+            "properties": {
+              "x": {
+                "description": "The X coordinate of the cell",
+                "type": "integer"
+              },
+              "y": {
+                "description": "The Y coordinate of the cell",
+                "type": "integer"
+              },
+              "burning": {
+                "description": "True if cell is currently burning",
+                "type": "boolean"
+              },
+              "smoke": {
+                "description": "True if cell is currently producing smoke",
+                "type": "boolean"
+              },
+              "burnProbability": {
+                "description": "Probability of cell catching fire",
+                "type": "number"
+              },
+              "fuel": {
+                "description": "Amount of fuel left in the cell"
+              }
+            }
+          }
         }
       }
     }
