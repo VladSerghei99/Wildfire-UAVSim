@@ -7,7 +7,7 @@ SYSTEM_RANDOM = random.SystemRandom()  # ... Not available on all systems ... (P
 
 # simulator activators (environment conditions)
 
-FIXED_WIND = False
+FIXED_WIND = True
 ACTIVATE_SMOKE = False
 ACTIVATE_WIND = False
 # To avoid throwing "KeyError: 'Layer'" when prob burning maps are shown (so UAV won't get its "Layer" attribute in the
@@ -26,20 +26,24 @@ FUEL_BOTTOM_LIMIT = 7
 
 DENSITY_PROB = 1  # Tree density (Float number in the interval [0, 1])
 
-WIND_DIRECTION = 'south'
+WIND_DIRECTION = 'east'
 # if FIXED_WIND == False (compose wind), then variables inside the if statement are set to be used in the project
+# Possible mixed wind directions: NW, NE, SW, SE"
+FIRST_DIR = 'south'  # Introduce first wind direction (north, south, east, west):
+SECOND_DIR = 'west'  # Introduce second wind direction (probability calculated based on first one),
+FIRST_DIR_PROB = 0.5  # Introduce first wind probability [0, 1]
 if not FIXED_WIND:
     # Possible mixed wind directions: NW, NE, SW, SE"
     FIRST_DIR = 'south'  # Introduce first wind direction (north, south, east, west):
-    SECOND_DIR = 'east'  # Introduce second wind direction (probability calculated based on first one),
-    FIRST_DIR_PROB = 0.8  # Introduce first wind probability [0, 1]
-MU = 0.9  # Wind velocity (Float number in the interval [0, 1])
+    SECOND_DIR = 'west'  # Introduce second wind direction (probability calculated based on first one),
+    FIRST_DIR_PROB = 0.5  # Introduce first wind probability [0, 1]
+MU = 0.95  # Wind velocity (Float number in the interval [0, 1])
 
-SMOKE_PRE_DISPELLING_COUNTER = 2
+SMOKE_PRE_DISPELLING_COUNTER = 7
 
 # UAVs params
 
-NUM_AGENTS = 0
+NUM_AGENTS = 3
 N_ACTIONS = 4
 UAV_OBSERVATION_RADIUS = 8
 side = ((UAV_OBSERVATION_RADIUS * 2) + 1)
